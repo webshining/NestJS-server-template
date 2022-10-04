@@ -1,0 +1,19 @@
+version: '3.9'
+
+services:
+  server:
+    build: .
+    restart: always
+    ports:
+      - 4000:4000
+    depends_on:
+      - database
+  database:
+    image: postgres
+    restart: always
+    ports:
+      - 5000:5432
+    environment:
+      - POSTGRES_DB=Study
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_USER=webshining
