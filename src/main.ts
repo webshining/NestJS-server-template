@@ -1,13 +1,12 @@
-import { NestFactory } from "@nestjs/core";
-import { AppModule } from "./app.module";
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
 
-const PORT = process.env.PORT || 7001;
+const PORT = process.env.PORT || 4000;
 
-const start = async () => {
+const bootstrap = async () => {
     const app = await NestFactory.create(AppModule);
-    await app.listen(PORT);
+    app.setGlobalPrefix('api');
+    await app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 };
 
-start().then(() => {
-    console.log(`Server started on port ${PORT}`);
-});
+bootstrap();

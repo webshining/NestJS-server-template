@@ -1,8 +1,7 @@
 import { Module } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigModule, ConfigService } from "@nestjs/config";
-import { DIR } from "./paths";
-import { UsersModule } from "./user/users.module";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { UsersModule } from "./users/users.module";
 
 @Module({
     imports: [
@@ -11,6 +10,7 @@ import { UsersModule } from "./user/users.module";
         }),
         TypeOrmModule.forRootAsync({
             imports: [ConfigModule],
+            inject: [ConfigService],
             useFactory: (configService: ConfigService) =>
                 configService.get("NODE_ENV") == "prod"
                     ? {
@@ -20,20 +20,20 @@ import { UsersModule } from "./user/users.module";
                           password: configService.get("DB_PASS"),
                           host: configService.get("DB_HOST"),
                           port: configService.get("DB_PORT"),
+                          entities: [],
                           synchronize: true,
-                          entities: [__dirname + "/**/*.model{.ts,.js}"],
                           autoLoadEntities: true,
                       }
                     : {
                           type: "sqlite",
-                          database: `${DIR}/data/${configService.get("DB_NAME") || "database"}.sqlite3`,
+                          database: "database.sqlite3",
+                          entities: [],
                           synchronize: true,
-                          entities: [__dirname + "/**/*.model{.ts,.js}"],
                           autoLoadEntities: true,
                       },
-            inject: [ConfigService],
         }),
         UsersModule,
     ],
+    providers: [],
 })
 export class AppModule {}
